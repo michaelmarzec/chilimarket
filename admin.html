@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#e8321b">
+<meta name="robots" content="noindex">
+<title>Chili Market Kitchen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Figtree:wght@500;700;800;900&family=Space+Mono:wght@700&display=swap">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<canvas id="pot" aria-hidden="true"></canvas>
+
+<main id="gate" class="wrap login">
+  <form class="login-card" id="gateForm">
+    <div class="hero">
+      <h1><span class="wobble" data-word="THE"></span><br><span class="wobble row2" data-word="KITCHEN"></span></h1>
+      <p>Bookie controls. Set odds, close betting, settle lines.</p>
+    </div>
+    <div class="panel">
+      <div class="field"><label for="apw">Admin password</label><input id="apw" type="password" autocomplete="current-password"></div>
+      <p class="err" id="gateErr" role="alert"></p>
+      <button class="btn-big" type="submit">Open the kitchen</button>
+    </div>
+    <div class="demo-flag" id="demoFlag" hidden>Demo mode · admin password is changeme</div>
+  </form>
+</main>
+
+<div id="kitchen" class="wrap" hidden>
+  <header class="top">
+    <div class="top-row">
+      <div class="logo">The<br>Kitchen</div>
+      <div class="btns"><a class="abtn" href="./" style="text-decoration:none;color:inherit;display:grid;place-items:center">Player view</a></div>
+    </div>
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" data-tab="lines" aria-selected="true">Lines</button>
+      <button class="tab" role="tab" data-tab="new" aria-selected="false">New line</button>
+      <button class="tab" role="tab" data-tab="players" aria-selected="false">Players</button>
+    </div>
+  </header>
+  <section id="tab-lines" class="admin-grid"></section>
+  <section id="tab-new" hidden></section>
+  <section id="tab-players" hidden></section>
+  <div class="whoami"><span>Tip: settling and deleting need two taps.</span><button id="lock" type="button">Lock kitchen</button></div>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script src="js/config.js"></script>
+<script src="js/demo-data.js"></script>
+<script src="js/api.js"></script>
+<script src="js/pot.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#e8321b">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Chili Market</title>
+<meta name="description" content="The official sportsbook of the Chili Cook Off. Tonight we bet on beans.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M14.2 5.2c2.6-.6 4.6 1.4 4.2 4.1-.8 5.6-6.8 11.6-14.6 12.4-1 .1-1.4-1-.6-1.6 4.6-3.4 6.8-7.8 7.4-11.2.3-1.9 1.6-3.3 3.6-3.7z' fill='%23e8321b' stroke='%231f0a05' stroke-width='1.6'/%3E%3Cpath d='M13 6.5c1.3-1.4 3.6-1.5 4.6-.3' fill='none' stroke='%233dbb52' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Figtree:wght@500;700;800;900&family=Space+Mono:wght@700&display=swap">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="pepper" viewBox="0 0 24 24">
+    <path d="M15.5 3.5c1.2-1 2.4-1.3 3.4-1" fill="none" stroke="#3dbb52" stroke-width="2.4" stroke-linecap="round"/>
+    <path d="M14.2 5.2c2.6-.6 4.6 1.4 4.2 4.1-.8 5.6-6.8 11.6-14.6 12.4-1 .1-1.4-1-.6-1.6 4.6-3.4 6.8-7.8 7.4-11.2.3-1.9 1.6-3.3 3.6-3.7z" fill="#e8321b" stroke="#1f0a05" stroke-width="1.6"/>
+    <path d="M13 6.5c1.3-1.4 3.6-1.5 4.6-.3" fill="none" stroke="#3dbb52" stroke-width="2.2" stroke-linecap="round"/>
+  </symbol>
+</svg>
+<canvas id="pot" aria-hidden="true"></canvas>
+
+<!-- LOGIN -->
+<main id="loginView" class="wrap login">
+  <form class="login-card" id="loginForm" autocomplete="off">
+    <div class="hero">
+      <svg class="bowl" viewBox="0 0 220 150" aria-hidden="true">
+        <g class="steam"><path d="M70 40c-10-10 10-18 0-30"/><path d="M110 36c-10-10 10-18 0-30"/><path d="M150 40c-10-10 10-18 0-30"/></g>
+        <ellipse cx="110" cy="70" rx="96" ry="22" fill="#b51f0e" stroke="#1f0a05" stroke-width="5"/>
+        <g fill="#6b170b" stroke="#1f0a05" stroke-width="2.5">
+          <ellipse cx="72" cy="66" rx="10" ry="6" transform="rotate(-20 72 66)"/><ellipse cx="118" cy="74" rx="10" ry="6" transform="rotate(15 118 74)"/>
+          <ellipse cx="150" cy="64" rx="10" ry="6" transform="rotate(-8 150 64)"/><ellipse cx="96" cy="60" rx="9" ry="5.5" transform="rotate(30 96 60)"/>
+        </g>
+        <circle cx="134" cy="62" r="5" fill="#fff3dc" stroke="#1f0a05" stroke-width="2"/>
+        <path d="M128 76c6-4 14-4 18 0" stroke="#3dbb52" stroke-width="5" stroke-linecap="round" fill="none"/>
+        <path d="M14 70c0 44 40 72 96 72s96-28 96-72" fill="#fff3dc" stroke="#1f0a05" stroke-width="5"/>
+        <path d="M40 98h140" stroke="#ffc31c" stroke-width="8" stroke-linecap="round"/>
+      </svg>
+      <h1><span class="wobble" data-word="CHILI"></span><br><span class="wobble row2" data-word="MARKET"></span></h1>
+      <span class="tld">chilimarket.bet</span>
+      <p>Sports. Politics. The Oscars. Tonight we bet on beans.</p>
+    </div>
+    <div class="panel">
+      <div class="field"><label for="u">Username</label><input id="u" autocapitalize="none" autocorrect="off" autocomplete="username" spellcheck="false"></div>
+      <div class="field"><label for="p">Password</label><input id="p" type="password" autocomplete="current-password"></div>
+      <p class="err" id="err" role="alert"></p>
+      <button class="btn-big" id="loginBtn" type="submit">Grab a spoon</button>
+    </div>
+    <div class="demo-flag" id="demoFlag" hidden>Demo mode · bets stay on this phone · try mook / zook</div>
+  </form>
+</main>
+
+<!-- APP -->
+<div id="appView" hidden>
+  <div class="wrap" id="appWrap">
+    <header class="top">
+      <div class="top-row">
+        <div class="logo">Chili<br>Market</div>
+        <div class="bank" id="bankPill"><div class="coin">Z</div><div><small>Zook Bucks</small><b class="num" id="bank">0</b></div></div>
+      </div>
+      <div class="tabs" role="tablist">
+        <button class="tab" role="tab" data-tab="menu" aria-selected="true">The Menu</button>
+        <button class="tab" role="tab" data-tab="bowl" aria-selected="false">My Bowl<span class="count" id="betCount" hidden>0</span></button>
+        <button class="tab" role="tab" data-tab="hot" aria-selected="false">Hot List</button>
+      </div>
+    </header>
+    <section id="tab-menu"></section>
+    <section id="tab-bowl" hidden></section>
+    <section id="tab-hot" hidden></section>
+    <div class="whoami"><span id="whoami"></span><button id="logout" type="button">Log out</button></div>
+  </div>
+  <div class="ladle" id="ladle" hidden>
+    <div class="ladle-in">
+      <svg class="steam" viewBox="0 0 120 44" aria-hidden="true"><g class="steam"><path d="M30 42c-8-8 8-14 0-24"/><path d="M60 42c-8-8 8-14 0-24"/><path d="M90 42c-8-8 8-14 0-24"/></g></svg>
+      <div class="ladle-h"><b>Your Ladle</b><button id="clearSlip" type="button">Dump it</button></div>
+      <div class="ladle-pick" id="slipPick"></div>
+      <div class="stake">
+        <input id="stake" inputmode="numeric" pattern="[0-9]*" enterkeyhint="done" placeholder="How many Zook Bucks?">
+        <button class="spoon" data-add="50" type="button">+50</button>
+        <button class="spoon" data-add="100" type="button">+100</button>
+        <button class="spoon" data-add="all" type="button">ALL IN</button>
+      </div>
+      <div class="payout"><span>Could win</span><b id="toWin">0</b></div>
+      <button class="btn-ladle" id="place" type="button" disabled>Ladle it in</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script src="js/config.js"></script>
+<script src="js/demo-data.js"></script>
+<script src="js/api.js"></script>
+<script src="js/pot.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
