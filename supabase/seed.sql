@@ -1,26 +1,6 @@
--- Chili Market starting data. Run after schema.sql.
--- CHANGE THE PASSWORDS before the party (or change them later in the admin page).
--- Passwords are stored hashed and are not case-sensitive.
-
--- Admin password for /admin.html
-insert into public.settings (key, value)
-values ('admin_hash', extensions.crypt('changeme', extensions.gen_salt('bf')))
-on conflict (key) do nothing;
-
--- Players: username, password, starting Zook Bucks
-insert into public.players (username, pass_hash, bank)
-select u, extensions.crypt(p, extensions.gen_salt('bf')), 1000
-from (values
-  ('mook',   'zook'),
-  ('steve',  'beans'),
-  ('cole',   'sorry'),
-  ('sharla', 'commish'),
-  ('harry',  '19straight'),
-  ('jackie', '19straight'),
-  ('cawner', 'santa'),
-  ('conor',  'marzec')
-) as t(u, p)
-on conflict (username) do nothing;
+-- Chili Market starting lines. Run after schema.sql.
+-- Passwords are NOT in this file on purpose (the repo is public).
+-- Set them with supabase/players.example.sql, pasted into the SQL Editor and never committed.
 
 -- Lines. a = first side, b = second side. American odds (+250 / -250).
 insert into public.lines (id, course, sort, question, a_label, a_odds, b_label, b_odds, note) values

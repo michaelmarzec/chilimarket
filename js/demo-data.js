@@ -1,5 +1,7 @@
 // Sample data for DEMO MODE only (when js/config.js has no Supabase keys).
-// The real lines and players live in Supabase: see supabase/seed.sql.
+// These are throwaway demo logins that only work in each visitor's own browser.
+// They are NOT the real passwords. Real players and the admin password live in
+// Supabase only (see supabase/players.example.sql).
 window.CHILI_DEMO = {
   adminPassword: "changeme",
   players: [
