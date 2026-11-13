@@ -5,7 +5,7 @@
 // While these are empty, the site runs in DEMO MODE: everything works,
 // but bets only live in each person's browser.
 window.CHILI_CONFIG = {
-  supabaseUrl: "",      // e.g. "https://abcdefghijkl.supabase.co"
-  supabaseAnonKey: "",  // e.g. "eyJhbGciOi..." or "sb_publishable_..."
+  supabaseUrl: "https://nbdyfrlbbgzfjsibwqpi.supabase.co",
+  supabaseAnonKey: "sb_publishable_uX_H_ZtZpIpdh40pJBZuuQ_EhQPTx3n",
   pollSeconds: 5,       // how often phones refresh odds, bets and the leaderboard
 };
