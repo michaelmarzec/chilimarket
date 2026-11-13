@@ -41,8 +41,9 @@
     e.preventDefault();
     const btn = $("#loginBtn"); btn.disabled = true; $("#err").textContent = "";
     try {
-      const r = await API.login($("#u").value.trim().toLowerCase(), $("#p").value.trim().toLowerCase());
+      const r = await API.login($("#u").value.trim(), $("#p").value.trim().toLowerCase());
       await enter(r.token, r.username, true);
+      toast(r.created ? `Welcome, ${r.username}! Here's 1,000 Zook Bucks` : `Welcome back, ${r.username}`);
     } catch (err) { $("#err").textContent = err.message; }
     btn.disabled = false;
   });

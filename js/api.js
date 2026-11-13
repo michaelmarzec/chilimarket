@@ -5,7 +5,8 @@
   const LIVE = !!(cfg.supabaseUrl && cfg.supabaseAnonKey);
 
   const MESSAGES = {
-    bad_login: "That username and password don't match. Check the card Mook gave you.",
+    bad_login: "Wrong password. It's up on the big screen.",
+    bad_name: "Names can use letters, numbers and spaces (24 characters max).",
     bad_token: "You've been logged out. Log in again.",
     bad_admin: "Wrong admin password.",
     no_line: "That bet doesn't exist anymore.",
@@ -56,6 +57,8 @@
     adminDeleteLine: (pw, id) => rpc("admin_delete_line", { p_pw: pw, p_line: id }),
     adminSavePlayer: (pw, u, p, bank) => rpc("admin_save_player", { p_pw: pw, p_username: u, p_password: p, p_bank: bank }),
     adminAdjustBank: (pw, u, delta) => rpc("admin_adjust_bank", { p_pw: pw, p_username: u, p_delta: delta }),
+    adminSetPlayerPassword: (pw, np) => rpc("admin_set_player_password", { p_pw: pw, p_new: np }),
+    adminDeletePlayer: (pw, u) => rpc("admin_delete_player", { p_pw: pw, p_username: u }),
   };
 
   // ---------------- demo (in this browser only) ----------------
@@ -65,6 +68,7 @@
     const d = window.CHILI_DEMO;
     const s = {
       adminPassword: d.adminPassword,
+      playerPassword: d.playerPassword,
       players: d.players.map((p) => ({ ...p, token: "demo-" + p.username })),
       lines: d.lines.map((l) => ({ ...l, locked: false, result: null })),
       bets: [], nextId: 1,
@@ -79,6 +83,8 @@
   const fail = (code) => { throw new Error(friendly(code)); };
   const wait = (v) => new Promise((r) => setTimeout(() => r(v), 120));
   const clean = (u) => String(u || "").trim().toLowerCase();
+  const cleanName = (u) => String(u || "").trim().replace(/\s+/g, " ").toLowerCase();
+  const NAME_RE = /^[a-z0-9][a-z0-9 _.'-]{0,23}$/;
   const sortedLines = () => [...db.lines].sort((a, b) => a.sort - b.sort || a.id.localeCompare(b.id));
   const playerBy = (t) => db.players.find((p) => p.token === t) || fail("bad_token");
   const checkAdmin = (pw) => { if (pw !== db.adminPassword) fail("bad_admin"); };
@@ -103,6 +109,7 @@
         const t = (side) => ({ count: bs.filter((b) => b.side === side).length, stake: bs.filter((b) => b.side === side).reduce((s, b) => s + b.stake, 0) });
         return { ...l, tally: { a: t("a"), b: t("b") } };
       }),
+      player_password_set: !!db.playerPassword,
       players: db.players.map((p) => ({ username: p.username, bank: p.bank, bets: db.bets.filter((b) => b.username === p.username).length }))
         .sort((a, b) => a.username.localeCompare(b.username)),
     };
@@ -111,9 +118,12 @@
   const demo = {
     async login(u, p) {
       db = load();
-      const pl = db.players.find((x) => x.username === clean(u));
-      if (!pl || pl.password !== clean(p)) fail("bad_login");
-      return wait({ token: pl.token, username: pl.username });
+      if (!db.playerPassword || clean(p) !== db.playerPassword) fail("bad_login");
+      const name = cleanName(u);
+      if (!NAME_RE.test(name)) fail("bad_name");
+      let pl = db.players.find((x) => x.username === name), created = false;
+      if (!pl) { pl = { username: name, bank: 1000, token: "demo-" + name }; db.players.push(pl); created = true; save(); }
+      return wait({ token: pl.token, username: pl.username, created });
     },
     async getState(t) { db = load(); return wait(state(playerBy(t))); },
     async placeBet(t, id, side, stake) {
@@ -173,8 +183,18 @@
       save(); return wait(adminView());
     },
     async adminAdjustBank(pw, u, delta) {
-      db = load(); checkAdmin(pw); const p = db.players.find((x) => x.username === clean(u)) || fail("no_player");
+      db = load(); checkAdmin(pw); const p = db.players.find((x) => x.username === cleanName(u)) || fail("no_player");
       p.bank += delta; save(); return wait(adminView());
+    },
+    async adminSetPlayerPassword(pw, np) {
+      db = load(); checkAdmin(pw); if (!clean(np)) fail("bad_player");
+      db.playerPassword = clean(np); save(); return wait(adminView());
+    },
+    async adminDeletePlayer(pw, u) {
+      db = load(); checkAdmin(pw); const name = cleanName(u);
+      if (!db.players.some((x) => x.username === name)) fail("no_player");
+      db.players = db.players.filter((x) => x.username !== name); db.bets = db.bets.filter((b) => b.username !== name);
+      save(); return wait(adminView());
     },
     reset() { try { localStorage.removeItem(KEY); } catch (e) {} db = load(); },
   };

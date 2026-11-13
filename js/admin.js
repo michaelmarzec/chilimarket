@@ -141,13 +141,9 @@
     el.innerHTML = `<div class="course"><h2>Players</h2><span>${data.players.length} spoons</span></div>
       <div class="admin-grid">
       <article class="admin-card">
-        <div class="status">Add a player or reset a password</div>
-        <div class="row2col">
-          <div class="field"><label for="pu">Username</label><input id="pu" autocapitalize="none" autocorrect="off" spellcheck="false"></div>
-          <div class="field"><label for="pp">Password</label><input id="pp" autocapitalize="none" autocorrect="off" spellcheck="false"></div>
-        </div>
-        <div class="field"><label for="pb">Starting Zook Bucks (blank = 1,000 for new, unchanged for existing)</label><input id="pb" inputmode="numeric"></div>
-        <div class="btns"><button class="abtn go" id="savePlayer" type="button">Save player</button></div>
+        <div class="status">Shared player password: ${data.player_password_set ? "set" : "NOT SET (nobody can log in yet)"}</div>
+        <div class="field"><label for="spw">Everyone logs in with any name plus this password</label><input id="spw" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="e.g. beans"></div>
+        <div class="btns"><button class="abtn go" id="savePw" type="button">${data.player_password_set ? "Change password" : "Set password"}</button></div>
       </article>
       <article class="admin-card">
         <div class="status">Give or take Zook Bucks</div>
@@ -158,13 +154,18 @@
         <div class="btns"><button class="abtn go" id="adjust" type="button">Apply</button></div>
       </article>
       <article class="admin-card">
-        <div class="status">Balances (Zook Bucks in hand)</div>
-        <div class="plist">${data.players.map((p) => `<div class="prow"><span>${esc(p.username)}</span><span class="num">${fmt(p.bank)} · ${p.bets} bets</span></div>`).join("")}</div>
+        <div class="status">Players (Zook Bucks in hand). Remove typo accounts here.</div>
+        <div class="plist">${data.players.map((p) => `<div class="prow"><span>${esc(p.username)}<br><span class="num">${fmt(p.bank)} · ${p.bets} bets</span></span><button class="abtn bad" data-del="${esc(p.username)}" type="button">Remove</button></div>`).join("")}</div>
       </article></div>`;
-    $("#savePlayer").addEventListener("click", () => {
-      const b = $("#pb").value.trim();
-      act(() => API.adminSavePlayer(pw, $("#pu").value, $("#pp").value, b === "" ? null : parseInt(b, 10)), "Player saved");
+    $("#savePw").addEventListener("click", () => {
+      const v = $("#spw").value.trim();
+      if (!v) return toast("Type a password first", true);
+      act(() => API.adminSetPlayerPassword(pw, v), "Player password saved");
     });
+    el.querySelectorAll("[data-del]").forEach((b) => b.addEventListener("click", () => {
+      if (!armed(b)) return;
+      act(() => API.adminDeletePlayer(pw, b.dataset.del), `Removed ${b.dataset.del} and their bets`);
+    }));
     $("#adjust").addEventListener("click", () => {
       const d = parseInt($("#ad").value, 10);
       if (!d) return toast("Enter an amount", true);

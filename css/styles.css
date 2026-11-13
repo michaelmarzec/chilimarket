@@ -51,6 +51,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .btn-big{background:var(--jalapeno);border:3px solid var(--ink);border-radius:999px;padding:14px;font-family:var(--display);font-size:24px;color:var(--ink);box-shadow:var(--pop);transition:transform .08s}
 .btn-big:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--ink)}
 .btn-big:disabled{opacity:.6}
+.login-note{margin:0;text-align:center;font-weight:700;font-size:13px;color:var(--bean)}
 .hint{text-align:center;font-family:var(--mono);font-size:12px;color:var(--sour)}
 .demo-flag{background:var(--ink);color:var(--cheese);font-family:var(--mono);font-size:12px;text-align:center;padding:6px 10px;border-radius:12px}
 
@@ -162,7 +163,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .abtn.armed{outline:3px solid var(--ink);outline-offset:2px;animation:bump .4s}
 .status{font-weight:900;font-size:12px;text-transform:uppercase;letter-spacing:.08em}
 .plist{display:grid;gap:6px}
-.prow{display:flex;justify-content:space-between;gap:8px;font-weight:800;border-bottom:2px dashed var(--cream-2);padding-bottom:6px}
+.prow{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:800;border-bottom:2px dashed var(--cream-2);padding-bottom:6px}
 .prow .num{font-size:13px}
 
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}

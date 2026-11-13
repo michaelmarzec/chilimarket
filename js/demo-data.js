@@ -4,15 +4,16 @@
 // Supabase only (see supabase/players.example.sql).
 window.CHILI_DEMO = {
   adminPassword: "changeme",
+  playerPassword: "chili",   // the one password everyone uses (demo only)
   players: [
-    { username: "mook",   password: "zook",       bank: 1000 },
-    { username: "steve",  password: "beans",      bank: 1000 },
-    { username: "cole",   password: "sorry",      bank: 1840 },
-    { username: "jackie", password: "19straight", bank: 1310 },
-    { username: "harry",  password: "19straight", bank: 1205 },
-    { username: "sharla", password: "commish",    bank: 990 },
-    { username: "cawner", password: "santa",      bank: 720 },
-    { username: "conor",  password: "marzec",     bank: 410 },
+    { username: "mook", bank: 1000 },
+    { username: "steve", bank: 1000 },
+    { username: "cole", bank: 1840 },
+    { username: "jackie", bank: 1310 },
+    { username: "harry", bank: 1205 },
+    { username: "sharla", bank: 990 },
+    { username: "cawner", bank: 720 },
+    { username: "conor", bank: 410 },
   ],
   lines: [
     { id:"murder",   course:"Main Course",  sort:10,  question:"Will there be another murder mystery?", a_label:"Yes", a_odds:400,  b_label:"No", b_odds:-600, note:"Santa died in 47 of 47 rehearsals." },
