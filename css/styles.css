@@ -83,6 +83,8 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .heat{display:flex;align-items:center;gap:6px;font-weight:900;font-size:11px;letter-spacing:.1em;text-transform:uppercase}
 .heat .peps{display:flex;gap:1px;font-size:17px}
 .heat .peps .off{opacity:.18}
+.line-no{margin-left:auto;font-family:var(--mono);font-size:11px;letter-spacing:.04em;background:var(--ink);color:var(--cheese);border-radius:8px;padding:2px 8px;white-space:nowrap}
+.scoop .line-no{margin:0 4px 0 0;vertical-align:2px}
 .q{font-weight:900;font-size:18px;line-height:1.2;text-wrap:balance}
 .picks{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .bean-btn{position:relative;display:flex;flex-direction:column;align-items:center;background:var(--bean-lite);color:var(--sour);border:3px solid var(--ink);

@@ -118,7 +118,7 @@
         const tally = sidesOf(l).map((s) => `${esc(labelOf(l, s))}: ${tt(s).count} bets · ${fmt(tt(s).stake)} ZB`).join(multi ? "<br>" : " &nbsp;|&nbsp; ");
         const settleBtns = sidesOf(l).map((s) => `<button class="abtn go" data-act="settle-${esc(s)}" type="button">${esc(labelOf(l, s))} wins</button>`).join("");
         return `<article class="admin-card" data-id="${esc(l.id)}">
-          <div class="status">${multi ? "Pick the winner · " : ""}${status}</div>
+          <div class="status">Line ${data.lines.indexOf(l) + 1} · ${multi ? "Pick the winner · " : ""}${status}</div>
           ${lineFields(l, "l-" + l.id, multi)}
           <div class="tally">${tally}</div>
           <div class="btns">
