@@ -64,7 +64,7 @@
   };
 
   // ---------------- demo (in this browser only) ----------------
-  const KEY = "chilimarket-demo-v4";
+  const KEY = "chilimarket-demo-v5";
   function load() {
     try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && s.players) return s; } catch (e) {}
     const d = window.CHILI_DEMO;

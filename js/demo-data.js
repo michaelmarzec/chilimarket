@@ -36,7 +36,6 @@ window.CHILI_DEMO = {
     {"id":"buzzballz","question":"BuzzBallz consumed: 4.5","a_label":"Over","a_odds":-150,"b_label":"Under","b_odds":125,"course":"Over / Unders","sort":180},
     {"id":"hjcomp","course":"Side Dishes","sort":190,"question":"Will Harry + Jackie compete?","a_label":"Yes","a_odds":-1000,"b_label":"No","b_odds":600},
     {"id":"hj19","course":"Side Dishes","sort":200,"question":"Will Harry + Jackie win best presentation AGAIN?","a_label":"Yes","a_odds":-250,"b_label":"No","b_odds":200},
-    {"id":"cole","course":"Side Dishes","sort":210,"question":"Will Cole offend anyone?","a_label":"Yes","a_odds":-5000,"b_label":"No","b_odds":1500},
     {"id":"cawner","course":"Side Dishes","sort":220,"question":"Will Cawner sit on Santa's lap?","a_label":"Yes","a_odds":250,"b_label":"No","b_odds":-300},
     {"id":"conor","course":"Side Dishes","sort":230,"question":"Will Conor Law sit on Marzec's lap?","a_label":"Yes","a_odds":300,"b_label":"No","b_odds":-400},
     {"id":"steve","course":"Side Dishes","sort":240,"question":"Will Steve eat beans?","a_label":"Yes","a_odds":-800,"b_label":"No","b_odds":500},
@@ -46,5 +45,6 @@ window.CHILI_DEMO = {
     {"id":"magic","course":"Side Dishes","sort":280,"question":"Will Will pull another magic trick à la the Breck ski house?","a_label":"Yes","a_odds":150,"b_label":"No","b_odds":-180},
     {"id":"pokemon","course":"Side Dishes","sort":290,"question":"Ian's Pokémon collection: 1,000 cards","a_label":"Over","a_odds":-130,"b_label":"Under","b_odds":110},
     {"id":"molly","course":"Side Dishes","sort":300,"question":"Is Andrew's chili just Molly chocolate?","a_label":"Yes","a_odds":200,"b_label":"No","b_odds":-250},
+    {"id":"chase","course":"Side Dishes","sort":310,"question":"Is Chase perfect?","a_label":"Yes","a_odds":-10000000,"b_label":"No","b_odds":100000000},
   ],
 };

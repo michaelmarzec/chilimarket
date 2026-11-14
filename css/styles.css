@@ -84,7 +84,13 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .heat .peps{display:flex;gap:1px;font-size:17px}
 .heat .peps .off{opacity:.18}
 .line-no{margin-left:auto;font-family:var(--mono);font-size:11px;letter-spacing:.04em;background:var(--ink);color:var(--cheese);border-radius:8px;padding:2px 8px;white-space:nowrap}
-.line-tag{justify-self:start;font-family:var(--display);font-size:20px;line-height:1;color:var(--cheese);background:var(--ink);border-radius:10px;padding:6px 12px 5px;transform:rotate(-2deg);box-shadow:2px 2px 0 var(--sauce)}
+/* line number: its own column on the left of every bet */
+.bowl-card{grid-template-columns:72px minmax(0,1fr);column-gap:12px}
+.bowl-card > :not(.line-tag):not(.sticker){grid-column:2}
+.bowl-card > .picks:not(.line-tag):not(.sticker),.bowl-card > .opts:not(.line-tag):not(.sticker){grid-column:1 / -1}
+.bowl-card > .q:not(.line-tag):not(.sticker){align-self:center}
+.line-tag{grid-column:1;grid-row:1;align-self:start;display:grid;justify-items:center;width:72px;font-family:var(--display);font-size:27px;line-height:1;color:var(--cheese);background:var(--ink);border-radius:12px;padding:7px 8px 8px;transform:rotate(-3deg);box-shadow:2px 2px 0 var(--sauce)}
+.line-tag small{font-family:var(--body);font-weight:900;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--cream);margin-bottom:3px}
 .scoop .line-no{margin:0 4px 0 0;vertical-align:2px}
 .q{font-weight:900;font-size:18px;line-height:1.2;text-wrap:balance}
 .picks{display:grid;grid-template-columns:1fr 1fr;gap:10px}

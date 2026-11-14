@@ -4,7 +4,7 @@
   const $ = (s) => document.querySelector(s);
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const fmt = (n) => Math.round(n).toLocaleString();
-  const fmtOdds = (o) => (o > 0 ? `+${o}` : `${o}`);
+  const fmtOdds = (o) => (o > 0 ? "+" : "") + Number(o).toLocaleString();
   const pep = '<svg class="pep"><use href="#pepper"/></svg>';
   const HEAT = ["Mild", "Medium", "Hot", "Volcanic", "Call a doctor"];
   const sidesOf = (l) => (l.options ? l.options.map((o) => o.key) : ["a", "b"]);
@@ -92,7 +92,7 @@
     if (!courses.length) { $("#tab-menu").innerHTML = `<div class="empty">The kitchen is still cooking up lines. Check back in a minute.</div>`; return; }
     $("#tab-menu").innerHTML = courses.map((c) => `
       <div class="course"><h2>${esc(c.name)}</h2>${tags[c.name] ? `<span>${tags[c.name]}</span>` : ""}</div>
-      <div class="bowls">${c.lines.map(card).join("")}</div>`).join("") + `<p class="foot">Heat = how long the long shot is</p>`;
+      <div class="bowls">${c.lines.map(card).join("")}</div>`).join("");
     document.querySelectorAll(".bean-btn, .opt-btn").forEach((b) => b.addEventListener("click", () => {
       const id = b.dataset.line, side = b.dataset.side;
       st.sel = st.sel && st.sel.id === id && st.sel.side === side ? null : { id, side };
@@ -100,7 +100,7 @@
     }));
   }
   function card(l) {
-    const h = heatOf(l), closed = l.locked || l.result;
+    const closed = l.locked || l.result;
     let sticker = "";
     if (l.result === "void") sticker = `<span class="sticker void">Voided</span>`;
     else if (l.result) sticker = `<span class="sticker">Served: ${esc(labelOf(l, l.result))}</span>`;
@@ -110,8 +110,7 @@
     const row = (o) => `<button class="opt-btn${l.result === o.key ? " won" : ""}" data-line="${esc(l.id)}" data-side="${esc(o.key)}" ${closed ? "disabled" : ""}
       aria-pressed="${!!st.sel && st.sel.id === l.id && st.sel.side === o.key}"><span class="lab">${esc(o.label)}</span><span class="odds">${fmtOdds(o.odds)}</span></button>`;
     return `<article class="bowl-card${closed ? " closed" : ""}">${sticker}
-      <div class="line-tag">Line #${lineNo(l.id)}</div>
-      <div class="heat"><span class="peps">${Array.from({ length: 5 }, (_, i) => `<span class="${i < h ? "" : "off"}">${pep}</span>`).join("")}</span><span>${HEAT[h - 1]}</span></div>
+      <div class="line-tag"><small>Line</small>#${lineNo(l.id)}</div>
       <div class="q">${esc(l.question)}</div>
       ${l.options ? `<div class="opts">${l.options.map(row).join("")}</div>` : `<div class="picks">${btn("a")}${btn("b")}</div>`}
     </article>`;
