@@ -70,7 +70,6 @@
     return `
       <div class="field"><label for="${id("q")}">Question</label><input id="${id("q")}" data-f="question" value="${esc(l.question)}"></div>
       ${sides}
-      <div class="field"><label for="${id("n")}">Rehearsal data note</label><input id="${id("n")}" data-f="note" value="${esc(l.note)}"></div>
       <div class="row3col">
         <div class="field"><label for="${id("c")}">Section</label><input id="${id("c")}" data-f="course" list="courses" value="${esc(l.course)}"></div>
         <div class="field"><label for="${id("s")}">Order</label><input id="${id("s")}" data-f="sort" inputmode="numeric" value="${l.sort ?? ""}"></div>
@@ -118,7 +117,7 @@
         const tally = sidesOf(l).map((s) => `${esc(labelOf(l, s))}: ${tt(s).count} bets · ${fmt(tt(s).stake)} ZB`).join(multi ? "<br>" : " &nbsp;|&nbsp; ");
         const settleBtns = sidesOf(l).map((s) => `<button class="abtn go" data-act="settle-${esc(s)}" type="button">${esc(labelOf(l, s))} wins</button>`).join("");
         return `<article class="admin-card" data-id="${esc(l.id)}">
-          <div class="status">Line ${data.lines.indexOf(l) + 1} · ${multi ? "Pick the winner · " : ""}${status}</div>
+ <div class="status">Line #${data.lines.indexOf(l) + 1} · ${multi ? "Pick the winner · " : ""}${status}</div>
           ${lineFields(l, "l-" + l.id, multi)}
           <div class="tally">${tally}</div>
           <div class="btns">

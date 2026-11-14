@@ -110,10 +110,10 @@
     const row = (o) => `<button class="opt-btn${l.result === o.key ? " won" : ""}" data-line="${esc(l.id)}" data-side="${esc(o.key)}" ${closed ? "disabled" : ""}
       aria-pressed="${!!st.sel && st.sel.id === l.id && st.sel.side === o.key}"><span class="lab">${esc(o.label)}</span><span class="odds">${fmtOdds(o.odds)}</span></button>`;
     return `<article class="bowl-card${closed ? " closed" : ""}">${sticker}
-      <div class="heat"><span class="peps">${Array.from({ length: 5 }, (_, i) => `<span class="${i < h ? "" : "off"}">${pep}</span>`).join("")}</span><span>${HEAT[h - 1]}</span><span class="line-no">Line ${lineNo(l.id)}</span></div>
+      <div class="line-tag">Line #${lineNo(l.id)}</div>
+      <div class="heat"><span class="peps">${Array.from({ length: 5 }, (_, i) => `<span class="${i < h ? "" : "off"}">${pep}</span>`).join("")}</span><span>${HEAT[h - 1]}</span></div>
       <div class="q">${esc(l.question)}</div>
       ${l.options ? `<div class="opts">${l.options.map(row).join("")}</div>` : `<div class="picks">${btn("a")}${btn("b")}</div>`}
-      ${l.note ? `<div class="note"><b>REHEARSAL DATA</b>${esc(l.note)}</div>` : ""}
     </article>`;
   }
 
@@ -163,7 +163,7 @@
       const splat = b.status === "won" ? `<span class="splat won">Paid!</span>` : b.status === "lost" ? `<span class="splat lost">Burnt</span>` : b.status === "void" ? `<span class="splat void">Refund</span>` : "";
       const right = b.status === "won" ? `Risk<b>${fmt(b.stake)}</b>Collected<b>${fmt(b.payout)}</b>` : `Risk<b>${fmt(b.stake)}</b>To win<b>${fmt(API.winAmt(b.stake, b.odds))}</b>`;
       const no = lineNo(b.line_id);
-      return `<div class="scoop"><div class="sq">${no ? `<span class="line-no">Line ${no}</span> ` : ""}${esc(l.question)}<div class="sd">${esc(labelOf(l, b.side))} · <span class="num">${fmtOdds(b.odds)}</span></div>${splat}</div>
+      return `<div class="scoop"><div class="sq">${no ? `<span class="line-no">Line #${no}</span> ` : ""}${esc(l.question)}<div class="sd">${esc(labelOf(l, b.side))} · <span class="num">${fmtOdds(b.odds)}</span></div>${splat}</div>
         <div class="amt">${right}</div></div>`;
     }).join("");
   }
