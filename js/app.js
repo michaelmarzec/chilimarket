@@ -7,7 +7,11 @@
   const fmtOdds = (o) => (o > 0 ? `+${o}` : `${o}`);
   const pep = '<svg class="pep"><use href="#pepper"/></svg>';
   const HEAT = ["Mild", "Medium", "Hot", "Volcanic", "Call a doctor"];
-  const heatOf = (l) => { const o = Math.max(l.a_odds, l.b_odds); return Math.max(1, Math.min(5, Math.ceil(Math.log10(o / 100 + 1) * 3))); };
+  const sidesOf = (l) => (l.options ? l.options.map((o) => o.key) : ["a", "b"]);
+  const opt = (l, s) => (l.options ? l.options.find((o) => o.key === s) : null);
+  const labelOf = (l, s) => (l.options ? (opt(l, s) || { label: "?" }).label : l[s + "_label"]);
+  const oddsOf = (l, s) => (l.options ? (opt(l, s) || {}).odds : l[s + "_odds"]);
+  const heatOf = (l) => { const o = Math.max(...sidesOf(l).map((s) => oddsOf(l, s))); return Math.max(1, Math.min(5, Math.ceil(Math.log10(o / 100 + 1) * 3))); };
   const SESSION = "chilimarket-session";
 
   const st = { token: null, user: null, data: null, sel: null, tab: "menu", busy: false };
@@ -82,12 +86,12 @@
       if (!c) courses.push((c = { name: l.course, lines: [] }));
       c.lines.push(l);
     }
-    const tags = { "Main Course": "House specials", "Over / Unders": "Pick a side", "Side Dishes": "Guest props" };
+    const tags = { "Futures": "Pick the winner", "Main Course": "House specials", "Over / Unders": "Pick a side", "Side Dishes": "Guest props" };
     if (!courses.length) { $("#tab-menu").innerHTML = `<div class="empty">The kitchen is still cooking up lines. Check back in a minute.</div>`; return; }
     $("#tab-menu").innerHTML = courses.map((c) => `
       <div class="course"><h2>${esc(c.name)}</h2>${tags[c.name] ? `<span>${tags[c.name]}</span>` : ""}</div>
       <div class="bowls">${c.lines.map(card).join("")}</div>`).join("") + `<p class="foot">Heat = how long the long shot is</p>`;
-    document.querySelectorAll(".bean-btn").forEach((b) => b.addEventListener("click", () => {
+    document.querySelectorAll(".bean-btn, .opt-btn").forEach((b) => b.addEventListener("click", () => {
       const id = b.dataset.line, side = b.dataset.side;
       st.sel = st.sel && st.sel.id === id && st.sel.side === side ? null : { id, side };
       $("#stake").value = ""; render();
@@ -97,14 +101,16 @@
     const h = heatOf(l), closed = l.locked || l.result;
     let sticker = "";
     if (l.result === "void") sticker = `<span class="sticker void">Voided</span>`;
-    else if (l.result) sticker = `<span class="sticker">Served: ${esc(l[l.result + "_label"])}</span>`;
+    else if (l.result) sticker = `<span class="sticker">Served: ${esc(labelOf(l, l.result))}</span>`;
     else if (l.locked) sticker = `<span class="sticker locked">Betting closed</span>`;
     const btn = (side) => `<button class="bean-btn" data-line="${esc(l.id)}" data-side="${side}" ${closed ? "disabled" : ""}
-      aria-pressed="${!!st.sel && st.sel.id === l.id && st.sel.side === side}"><span class="lab">${esc(l[side + "_label"])}</span><span class="odds">${fmtOdds(l[side + "_odds"])}</span></button>`;
+      aria-pressed="${!!st.sel && st.sel.id === l.id && st.sel.side === side}"><span class="lab">${esc(labelOf(l, side))}</span><span class="odds">${fmtOdds(oddsOf(l, side))}</span></button>`;
+    const row = (o) => `<button class="opt-btn${l.result === o.key ? " won" : ""}" data-line="${esc(l.id)}" data-side="${esc(o.key)}" ${closed ? "disabled" : ""}
+      aria-pressed="${!!st.sel && st.sel.id === l.id && st.sel.side === o.key}"><span class="lab">${esc(o.label)}</span><span class="odds">${fmtOdds(o.odds)}</span></button>`;
     return `<article class="bowl-card${closed ? " closed" : ""}">${sticker}
       <div class="heat"><span class="peps">${Array.from({ length: 5 }, (_, i) => `<span class="${i < h ? "" : "off"}">${pep}</span>`).join("")}</span><span>${HEAT[h - 1]}</span></div>
       <div class="q">${esc(l.question)}</div>
-      <div class="picks">${btn("a")}${btn("b")}</div>
+      ${l.options ? `<div class="opts">${l.options.map(row).join("")}</div>` : `<div class="picks">${btn("a")}${btn("b")}</div>`}
       ${l.note ? `<div class="note"><b>REHEARSAL DATA</b>${esc(l.note)}</div>` : ""}
     </article>`;
   }
@@ -114,14 +120,14 @@
     $("#ladle").hidden = !show; $("#appWrap").style.paddingBottom = show ? "320px" : "";
     if (!show) return;
     const l = lineById(st.sel.id);
-    $("#slipPick").innerHTML = `${esc(l[st.sel.side + "_label"])} <span class="num">${fmtOdds(l[st.sel.side + "_odds"])}</span><small>${esc(l.question)}</small>`;
+    $("#slipPick").innerHTML = `${esc(labelOf(l, st.sel.side))} <span class="num">${fmtOdds(oddsOf(l, st.sel.side))}</span><small>${esc(l.question)}</small>`;
     updatePayout();
   }
   function stakeVal() { return parseInt($("#stake").value, 10) || 0; }
   function updatePayout() {
     if (!st.sel) return;
     const s = stakeVal(), l = lineById(st.sel.id), bank = st.data.me.bank;
-    $("#toWin").textContent = fmt(API.winAmt(s, l[st.sel.side + "_odds"]));
+    $("#toWin").textContent = fmt(API.winAmt(s, oddsOf(l, st.sel.side)));
     $("#place").disabled = s <= 0 || s > bank || st.busy;
     $("#place").textContent = s > bank ? "Not enough Zook Bucks" : st.busy ? "Ladling…" : "Ladle it in";
   }
@@ -154,7 +160,7 @@
       const l = lineById(b.line_id) || { question: "(line removed)", a_label: "A", b_label: "B" };
       const splat = b.status === "won" ? `<span class="splat won">Paid!</span>` : b.status === "lost" ? `<span class="splat lost">Burnt</span>` : b.status === "void" ? `<span class="splat void">Refund</span>` : "";
       const right = b.status === "won" ? `Risk<b>${fmt(b.stake)}</b>Collected<b>${fmt(b.payout)}</b>` : `Risk<b>${fmt(b.stake)}</b>To win<b>${fmt(API.winAmt(b.stake, b.odds))}</b>`;
-      return `<div class="scoop"><div class="sq">${esc(l.question)}<div class="sd">${esc(l[b.side + "_label"])} · <span class="num">${fmtOdds(b.odds)}</span></div>${splat}</div>
+      return `<div class="scoop"><div class="sq">${esc(l.question)}<div class="sd">${esc(labelOf(l, b.side))} · <span class="num">${fmtOdds(b.odds)}</span></div>${splat}</div>
         <div class="amt">${right}</div></div>`;
     }).join("");
   }

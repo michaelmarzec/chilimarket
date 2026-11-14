@@ -17,6 +17,8 @@
     already_settled: "That line is already settled. Unsettle it first.",
     not_settled: "That line isn't settled yet.",
     bad_odds: "Odds must be +100 or more, or -100 or less.",
+    bad_options: "Add at least two options, each with a name and odds.",
+    bad_question: "Write the question first.",
     bad_player: "Usernames need letters or numbers, and a password.",
     no_player: "No player with that username.",
   };
@@ -62,7 +64,7 @@
   };
 
   // ---------------- demo (in this browser only) ----------------
-  const KEY = "chilimarket-demo-v1";
+  const KEY = "chilimarket-demo-v2";
   function load() {
     try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && s.players) return s; } catch (e) {}
     const d = window.CHILI_DEMO;
@@ -89,6 +91,7 @@
   const playerBy = (t) => db.players.find((p) => p.token === t) || fail("bad_token");
   const checkAdmin = (pw) => { if (pw !== db.adminPassword) fail("bad_admin"); };
   const checkOdds = (o) => { if (!(o >= 100 || o <= -100)) fail("bad_odds"); };
+  const sideOdds = (l, s) => (l.options ? (l.options.find((o) => o.key === s) || {}).odds : s === "a" ? l.a_odds : s === "b" ? l.b_odds : undefined);
 
   function state(p) {
     const leaders = db.players.map((pl) => {
@@ -106,8 +109,9 @@
     return {
       lines: sortedLines().map((l) => {
         const bs = db.bets.filter((b) => b.line_id === l.id);
-        const t = (side) => ({ count: bs.filter((b) => b.side === side).length, stake: bs.filter((b) => b.side === side).reduce((s, b) => s + b.stake, 0) });
-        return { ...l, tally: { a: t("a"), b: t("b") } };
+        const tally = {};
+        bs.forEach((b) => { const t = (tally[b.side] = tally[b.side] || { count: 0, stake: 0 }); t.count++; t.stake += b.stake; });
+        return { ...l, tally };
       }),
       player_password_set: !!db.playerPassword,
       players: db.players.map((p) => ({ username: p.username, bank: p.bank, bets: db.bets.filter((b) => b.username === p.username).length }))
@@ -130,16 +134,23 @@
       db = load();
       const p = playerBy(t), l = db.lines.find((x) => x.id === id) || fail("no_line");
       if (l.locked || l.result) fail("line_closed");
-      if (side !== "a" && side !== "b") fail("bad_side");
+      const odds = sideOdds(l, side);
+      if (odds == null) fail("bad_side");
       if (!(stake > 0)) fail("bad_stake");
       if (stake > p.bank) fail("insufficient");
       p.bank -= stake;
-      db.bets.push({ id: db.nextId++, username: p.username, line_id: id, side, stake, odds: side === "a" ? l.a_odds : l.b_odds, status: "open", payout: null });
+      db.bets.push({ id: db.nextId++, username: p.username, line_id: id, side, stake, odds, status: "open", payout: null });
       save(); return wait(state(p));
     },
     async adminState(pw) { db = load(); checkAdmin(pw); return wait(adminView()); },
     async adminSaveLine(pw, line) {
-      db = load(); checkAdmin(pw); checkOdds(line.a_odds); checkOdds(line.b_odds);
+      db = load(); checkAdmin(pw);
+      if (!String(line.question || "").trim()) fail("bad_question");
+      if (line.options) {
+        if (line.options.length < 2) fail("bad_options");
+        line.options.forEach((o) => { if (!String(o.label || "").trim()) fail("bad_options"); checkOdds(o.odds); });
+        line = { ...line, a_odds: null, b_odds: null };
+      } else { checkOdds(line.a_odds); checkOdds(line.b_odds); line = { ...line, options: null }; }
       const i = db.lines.findIndex((l) => l.id === line.id);
       if (i >= 0) db.lines[i] = { ...db.lines[i], ...line };
       else db.lines.push({ locked: false, result: null, ...line });

@@ -93,6 +93,16 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 @media (hover:hover){.bean-btn:hover{transform:rotate(-3deg) scale(1.03)}}
 .bean-btn[aria-pressed="true"]{background:var(--jalapeno);color:var(--ink);transform:rotate(-2deg) scale(1.04)}
 .bean-btn[aria-pressed="true"] .odds{color:var(--ink)}
+.opts{display:grid;gap:8px}
+.opt-btn{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--sour);border:3px solid var(--ink);border-radius:999px;padding:9px 16px;min-height:48px;box-shadow:2px 2px 0 var(--ink);text-align:left;transition:transform .12s}
+.opt-btn .lab{font-weight:900;font-size:15px;line-height:1.2;min-width:0;overflow-wrap:anywhere}
+.opt-btn .odds{font-family:var(--mono);font-size:15px;color:var(--sauce-deep);flex:none}
+@media (hover:hover){.opt-btn:hover{transform:translateX(3px)}}
+.opt-btn[aria-pressed="true"]{background:var(--jalapeno);transform:translateX(3px)}
+.opt-btn[aria-pressed="true"] .odds{color:var(--ink)}
+.opt-btn.won{background:var(--cheese)}
+.bowl-card.closed .opts{pointer-events:none}
+.bowl-card.closed .opt-btn:not(.won){opacity:.55}
 .note{font-size:13px;font-weight:700;color:var(--bean);background:var(--cream-2);border-radius:12px;padding:7px 10px;border:2px dashed var(--bean-lite)}
 .note b{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;display:block;color:var(--sauce-deep)}
 .bowl-card.closed .picks{pointer-events:none;opacity:.55}
@@ -103,7 +113,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 /* ladle (bet slip) */
 .ladle{position:fixed;left:0;right:0;bottom:0;z-index:8;display:flex;justify-content:center;pointer-events:none;
   padding:0 max(12px,env(safe-area-inset-right,0px)) calc(12px + env(safe-area-inset-bottom,0px)) max(12px,env(safe-area-inset-left,0px))}
-.ladle-in{pointer-events:auto;width:100%;max-width:516px;background:var(--cheese);border:3px solid var(--ink);border-radius:26px 26px 40px 40px;box-shadow:0 -6px 0 var(--ink), 0 10px 40px rgba(31,10,5,.5);padding:14px 16px 16px;display:grid;gap:10px;position:relative;animation:slosh .35s ease-out}
+.ladle-in{pointer-events:auto;width:100%;max-width:516px;background:var(--cheese);border:3px solid var(--ink);border-radius:26px 26px 40px 40px;box-shadow:0 -6px 0 var(--ink), 0 10px 40px rgba(31,10,5,.5);padding:14px 16px 16px;display:grid;grid-template-columns:minmax(0,1fr);gap:10px;position:relative;animation:slosh .35s ease-out}
 @keyframes slosh{from{transform:translateY(40px) rotate(-2deg)}to{transform:none}}
 .ladle-in .steam{position:absolute;left:50%;top:-44px;width:120px;height:44px;transform:translateX(-50%)}
 .ladle-in .steam path{stroke:var(--cheese)}
@@ -112,8 +122,8 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .ladle-h button{background:none;border:0;font-weight:800;text-decoration:underline;min-height:36px}
 .ladle-pick{font-weight:900;font-size:16px;line-height:1.25}
 .ladle-pick small{display:block;font-weight:700;font-size:13px;opacity:.75}
-.stake{display:flex;gap:8px}
-.stake input{flex:1;min-width:0;background:var(--sour);border:3px solid var(--ink);border-radius:14px;padding:10px 12px;font-family:var(--mono);font-size:20px;color:var(--ink)}
+.stake{display:flex;gap:6px;min-width:0}
+.stake input{flex:1;min-width:0;width:0;background:var(--sour);border:3px solid var(--ink);border-radius:14px;padding:10px 12px;font-family:var(--mono);font-size:20px;color:var(--ink)}
 .spoon{background:var(--cream);border:3px solid var(--ink);border-radius:12px;padding:0 10px;font-weight:900;font-size:13px;min-height:48px;box-shadow:2px 2px 0 var(--ink)}
 .spoon:active{transform:translate(2px,2px);box-shadow:none}
 .payout{display:flex;justify-content:space-between;align-items:baseline;font-weight:800}
